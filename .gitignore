@@ -1,0 +1,8 @@
+build/
+.idea/
+*.iml
+*.log
+*.lock
+.packages
+.flutter-plugins
+.dart_tool/
