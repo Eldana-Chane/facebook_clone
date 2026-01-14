@@ -1,40 +1,79 @@
 import 'package:flutter/material.dart';
-import 'profile_screen.dart';
 import '../widgets/post_card.dart';
+import '../widgets/story_card.dart';
+import 'profile_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   final List<String> posts = [
     "Hello world!",
     "Flutter is awesome!",
-    "Check out this Facebook clone!"
+    "Check out this Facebook clone!",
+    "Another day, another post!",
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Facebook Clone")),
-      body: ListView.builder(
-        itemCount: posts.length,
-        itemBuilder: (context, index) {
-          return GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                PageRouteBuilder(
-                  pageBuilder: (_, __, ___) => ProfileScreen(username: "User $index"),
-                  transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                    var begin = Offset(1.0, 0.0);
-                    var end = Offset.zero;
-                    var curve = Curves.easeInOut;
-                    var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-                    return SlideTransition(position: animation.drive(tween), child: child);
-                  },
-                ),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 1,
+        title: Row(
+          children: [
+            Icon(Icons.facebook, color: Colors.blue, size: 40),
+            SizedBox(width: 8),
+            Text('Facebook',
+                style: TextStyle(
+                    color: Colors.blue,
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold)),
+          ],
+        ),
+        actions: [
+          IconButton(
+              onPressed: () {}, icon: Icon(Icons.search, color: Colors.black)),
+          IconButton(
+              onPressed: () {}, icon: Icon(Icons.chat, color: Colors.black)),
+        ],
+      ),
+      body: ListView(
+        children: [
+          // Stories Section (only circles)
+          Container(
+            height: 100,
+            padding: EdgeInsets.symmetric(vertical: 10),
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: 5,
+              itemBuilder: (context, index) {
+                return StoryCard(); // only circle, no text
+              },
+            ),
+          ),
+          Divider(height: 1, color: Colors.grey),
+          // Feed
+          ListView.builder(
+            physics: NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: posts.length,
+            itemBuilder: (context, index) {
+              return GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => ProfileScreen(username: "User $index")),
+                  );
+                },
+                child: PostCard(text: posts[index]),
               );
             },
-            child: PostCard(text: posts[index]),
-          );
-        },
+          ),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: Icon(Icons.add, color: Colors.white),
+        backgroundColor: Colors.blue,
       ),
     );
   }
